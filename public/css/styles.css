@@ -1,0 +1,210 @@
+/* ตั้งค่าพื้นหลังและฟอนต์ของเว็บ */
+body {
+  font-family: 'Arial', sans-serif;
+  background: #eff1f1;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+header {
+  background: #c3e0ff;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* เปลี่ยนสีข้อความของ Navbar */
+.navbar-brand, .nav-link {
+  color: #004ce4 !important;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+/* Section ที่มีรูปภาพเป็นพื้นหลัง */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  background: url('images/88.jpg') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ทำให้เนื้อหามีพื้นหลังเบลอเพื่อให้อ่านง่ายขึ้น */
+.overlay {
+  background: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.text-content {
+  color: white;
+  max-width: 600px;
+}
+
+.text-content h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+}
+
+.text-content h1 span {
+  display: block;
+  font-size: 3rem;
+  color: #f8d568;
+}
+
+.text-content p {
+  font-size: 1rem;
+  margin: 20px 0;
+}
+
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+}
+
+/* Auth Links */
+.auth-links {
+  display: flex;
+  justify-content: center; /* จัดให้อยู่กึ่งกลางในแนวนอน */
+  align-items: center; /* จัดให้อยู่กึ่งกลางในแนวตั้ง */
+  margin-top: auto !important; /* ดันไปด้านล่างสุด (ใช้ !important เพื่อ Override CSS อื่นๆ) */
+  position: relative; /* เพิ่ม position: relative เพื่อให้แน่ใจว่าไม่มีผลกระทบจาก CSS อื่นๆ */
+  overflow: visible; /* กำหนด overflow ให้เป็น visible เพื่อให้แน่ใจว่าเนื้อหาไม่ถูกซ่อน */
+}
+
+.auth-links .btn {
+  background-color: #f8d568;
+  color: #333;
+  padding: 15px 40px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  margin: 10px 0; /* ระยะห่างระหว่างปุ่ม */
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  width: 250px; /* ทำให้ปุ่มกว้างขึ้น */
+  text-align: center;
+}
+
+.auth-links .btn:hover {
+  background-color: #1a72b9;
+  color: white;
+  transform: scale(1.05);
+}
+
+
+/* ปรับแต่ง Footer */
+footer {
+  text-align: center;
+  background: #c3e0ff;
+  color: white;
+  padding: 20px 0;
+  margin-top: 20px ; /* ดัน Footer ไปด้านล่างสุด */
+  width: 100%; /* ทำให้ Footer กว้างเต็มที่ */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-section {
+      height: 400px;
+  }
+
+  .text-content h1 {
+      font-size: 2rem;
+  }
+
+  .text-content h1 span {
+      font-size: 1.5rem;
+  }
+
+  footer {
+      padding: 30px 0; /* ปรับ Padding สำหรับหน้าจอเล็ก */
+  }
+}
+
+/* Responsive สำหรับหน้าจอขนาดเล็ก */
+@media (max-width: 568px) {
+  .exercise-types {
+      flex-direction: column; /* เรียงเป็นแนวตั้งเมื่อหน้าจอเล็ก */
+      align-items: center; /* จัดให้อยู่ตรงกลาง */
+  }
+
+  footer {
+      padding: 40px 0; /* เพิ่ม Padding สำหรับหน้าจอเล็ก */
+  }
+      .auth-links .btn {
+        font-size: 0.9rem;
+        padding: 10px;
+        width: 180px;
+    }
+}
+
+
+
+
+
+/* เว้นระยะห่างจาก Hero Section ด้านบน */
+.exercise-types {
+  margin-top: 50px; /* เพิ่มระยะห่างด้านบน */
+  margin-bottom: 50px; /* เพิ่มระยะห่างด้านล่าง */
+
+  display: flex; /* ทำให้เป็น Flexbox Container */
+  flex-wrap: wrap; /* อนุญาตให้ขึ้นบรรทัดใหม่เมื่อเกิน */
+  justify-content: center; /* จัดเรียงให้อยู่ตรงกลาง */
+}
+
+/* ปรับแต่งกรอบของประเภทการออกกำลังกาย */
+.exercise-card {
+  background: #fff;
+  border: 2px solid #004ce4; /* กรอบสีน้ำเงิน */
+  border-radius: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+  padding: 10px; /* เพิ่ม padding ภายในกรอบ */
+  margin: 10px; /* เพิ่มระยะห่างระหว่างการ์ด */
+}
+
+.exercise-card:hover {
+  transform: scale(1.05);
+}
+
+/* ปรับขอบของรูปภาพให้อยู่ภายในกรอบ */
+.exercise-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 2px solid #004ce4; /* เส้นแบ่งระหว่างภาพกับเนื้อหา */
+}
+
+/* ปรับระยะห่างภายในข้อมูลของประเภท */
+.exercise-info {
+  padding: 15px;
+  border-top: 2px solid #004ce4; /* เส้นขอบด้านบนข้อมูล */
+}
+
+/* ปรับแต่งหัวข้อของประเภท */
+.exercise-info h3 {
+  margin: 10px 0;
+  font-size: 20px;
+  color: #004ce4;
+}
+
+

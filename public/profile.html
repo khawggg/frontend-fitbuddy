@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/pp.css">
+    <style>
+       /* Profile Section Styles */
+        .profile-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .profile-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-section p {
+            margin-bottom: 10px;
+        }
+
+        .profile-section strong {
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-light">
+        <a class="navbar-brand" href="#">
+            <img src="css/images/logologo.png" alt="Logo" class="logo-circle">
+            Fit Buddy
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/bmi.html">BMI Calculator</a></li>
+                <li class="nav-item"><a class="nav-link" href="/disease.html">Diseases</a></li>
+                <li class="nav-item "><a class="nav-link" href="profile.html">Profile</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/user_management.html">User Management</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+
+    <section class="hero-section">
+        <div class="overlay">
+            <div class="text-content">
+                <h1><span>Your Profile</span>Personal Information</h1>
+                <p>View and manage your profile information.</p>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <section class="profile-section">
+            <h2>Profile Details</h2>
+            <p><strong>Name:</strong> <span id="name"></span></p>
+            <p><strong>Age:</strong> <span id="age"></span></p>
+            <p><strong>Gender:</strong> <span id="gender"></span></p>
+            <p><strong>Email:</strong> <span id="email"></span></p>
+            <p><strong>Weight:</strong> <span id="weight"></span></p>
+            <p><strong>Height:</strong> <span id="height"></span></p>
+            <p><strong>BMI:</strong> <span id="bmi"></span></p>
+            <p><strong>Diseases:</strong> <span id="diseases"></span></p>
+            <p><strong>Exercise Types:</strong> <span id="exercise-types"></span></p>
+            <p><strong>Detailed Guidelines:</strong> <span id="detailed-guidelines"></span></p>
+            <button id="editProfileButton" class="btn btn-primary" style="text-align: center; display: block; margin: 20px auto;">Edit Profile</button>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Fit and Healthy. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('userId');
+            window.location.href = '/login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userId = localStorage.getItem('userId');
+
+            if (!userId) {
+                window.location.href = '/login.html'; // Redirect if not logged in
+                return;
+            }
+
+            // ฟังก์ชันดึงข้อมูลโปรไฟล์จาก API
+            fetch(`/api/profile/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('name').textContent = data.name || 'N/A';
+                    document.getElementById('age').textContent = data.age || 'N/A';
+                    document.getElementById('gender').textContent = data.gender || 'N/A';
+                    document.getElementById('email').textContent = data.email || 'N/A';
+                    document.getElementById('weight').textContent = data.weight || 'N/A';
+                    document.getElementById('height').textContent = data.height || 'N/A';
+                    document.getElementById('bmi').textContent = data.bmi || 'N/A';
+                    document.getElementById('diseases').textContent = data.diseases || 'None';
+                    document.getElementById('exercise-types').textContent = data.exercise_types || 'None';
+                    document.getElementById('detailed-guidelines').textContent = data.detailed_guidelines || 'None';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // แสดงข้อความเมื่อโหลดข้อมูลล้มเหลว
+                    document.getElementById('name').textContent = 'Error loading data.';
+                });
+
+            // เมื่อคลิกปุ่มแก้ไขโปรไฟล์
+            document.getElementById('editProfileButton').addEventListener('click', function() {
+                window.location.href = '/edit_profile.html'; // เปลี่ยนเส้นทางไปยังหน้าแก้ไขโปรไฟล์
+            });
+        });
+    </script>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

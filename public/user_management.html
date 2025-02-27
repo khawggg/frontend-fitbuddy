@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การจัดการผู้ใช้</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/pp.css">
+    
+    <style>
+        /* User Management Content */
+        #userManagementContent {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        #userManagementContent h1, #userManagementContent h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        #addUserForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #addUserForm input, #addUserForm select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #addUserForm button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            justify-content: center; 
+            transition: background-color 0.3s ease;
+        }
+
+        #addUserForm button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Table Styles */
+        #userTable {
+            width: 100%; /* ให้ตารางเต็มพื้นที่เสมอ */
+            border-collapse: collapse; /* รวมเส้นขอบเซลล์ */
+            margin-top: 20px; /* ระยะห่างด้านบน */
+            table-layout: auto; /* หรือใช้ fixed ถ้าต้องการให้แต่ละคอลัมน์ขยายตามเนื้อหา */
+        }
+
+
+        #userTable th, #userTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #userTable th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        #userTable button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        #userTable button.edit {
+            background-color: #28a745;
+            color: white;
+
+        }
+
+        #userTable button.delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-light">
+        <a class="navbar-brand" href="#">
+            <img src="css/images/logologo.png" alt="Logo" class="logo-circle">
+            Fit Buddy
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/bmi.html">BMI Calculator</a></li>
+                <li class="nav-item"><a class="nav-link" href="/disease.html">Diseases</a></li>
+                <li class="nav-item "><a class="nav-link" href="profile.html">Profile</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/user_management.html">User Management</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="overlay">
+            <div class="text-content">
+                <h1>USER <span>MANAGEMENT</span></h1>
+                <p>จัดการผู้ใช้และข้อมูล</p>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <div id="userManagementContent" style="display: none;">
+            <h2>เพิ่มผู้ใช้ใหม่</h2>
+            <form id="addUserForm">
+                <input type="text" id="newName" placeholder="ชื่อ" required>
+                <input type="number" id="newAge" placeholder="อายุ" required>
+                <select id="newGender" required>
+                    <option value="">เลือกเพศ</option>
+                    <option value="Male">ชาย</option>
+                    <option value="Female">หญิง</option>
+                    <option value="Other">อื่นๆ</option>
+                </select>
+                <input type="tel" id="newPhone" placeholder="โทรศัพท์" required>
+                <input type="email" id="newEmail" placeholder="อีเมล" required>
+                <input type="password" id="newPassword" placeholder="รหัสผ่าน" required>
+                <button type="submit">เพิ่มผู้ใช้</button>
+            </form>
+    
+            <h2>รายชื่อผู้ใช้</h2>
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ชื่อ</th>
+                        <th>อายุ</th>
+                        <th>เพศ</th>
+                        <th>โทรศัพท์</th>
+                        <th>อีเมล</th>
+                        <th>การกระทำ</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        </main>
+    
+        <script>
+            function fetchUsers() {
+                fetch('/users')
+                    .then(response => response.json())
+                    .then(users => {
+                        const tableBody = document.querySelector('#userTable tbody');
+                        tableBody.innerHTML = '';
+                        users.forEach(user => {
+                            const row = `
+                                <tr>
+                                    <td>${user.user_id}</td>
+                                    <td>${user.name}</td>
+                                    <td>${user.age}</td>
+                                    <td>${user.gender}</td>
+                                    <td>${user.phone}</td>
+                                    <td>${user.email}</td>
+                                    <td>
+                                        <button class="edit" onclick="editUser(${user.user_id})">แก้ไข</button>
+                                        <button class="delete" onclick="deleteUser(${user.user_id})">ลบ</button>
+                                    </td>
+                                </tr>
+                            `;
+                            tableBody.insertAdjacentHTML('beforeend', row);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching users:', error));
+            }
+    
+            document.getElementById('addUserForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('newName').value;
+                const age = document.getElementById('newAge').value;
+                const gender = document.getElementById('newGender').value;
+                const phone = document.getElementById('newPhone').value;
+                const email = document.getElementById('newEmail').value;
+                const password = document.getElementById('newPassword').value;
+    
+                fetch('/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, age, gender, phone, email, password })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    alert('เพิ่มผู้ใช้สำเร็จ');
+                    fetchUsers();
+                    this.reset();
+                })
+                .catch(error => {
+                    console.error('Error adding user:', error);
+                    alert('ไม่สามารถเพิ่มผู้ใช้ได้');
+                });
+            });
+    
+            function editUser(userId) {
+                const name = prompt('ใส่ชื่อใหม่:');
+                const age = prompt('ใส่อายุใหม่:');
+                const gender = prompt('ใส่เพศใหม่:');
+                const phone = prompt('ใส่เบอร์โทรศัพท์ใหม่:');
+                const email = prompt('ใส่อีเมลใหม่:');
+                const password = prompt('ใส่รหัสผ่านใหม่:');
+    
+                fetch(`/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, age, gender, phone, email, password })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    alert('แก้ไขผู้ใช้สำเร็จ');
+                    fetchUsers();
+                })
+                .catch(error => {
+                    console.error('Error updating user:', error);
+                    alert('ไม่สามารถแก้ไขผู้ใช้ได้');
+                });
+            }
+    
+            function deleteUser(userId) {
+                if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?')) {
+                    fetch(`/users/${userId}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data);
+                        alert('ลบผู้ใช้สำเร็จ');
+                        fetchUsers();
+                    })
+                    .catch(error => {
+                        console.error('Error deleting user:', error);
+                        alert('ไม่สามารถลบผู้ใช้ได้');
+                    });
+                }
+            }
+        </script>
+        <script>
+           
+    
+            function checkAdminPassword() {
+                const password = prompt('กรุณาใส่รหัสผ่านเพื่อเข้าสู่หน้าจัดการผู้ใช้:');
+                if (password === 'IMI05') {
+                    document.getElementById('userManagementContent').style.display = 'block';
+                    fetchUsers();
+                } else {
+                    alert('รหัสผ่านไม่ถูกต้อง');
+                    document.getElementById('userManagementContent').style.display = 'none'; // Keep it hidden if wrong password
+                }
+            }
+    
+            function logout() {
+                localStorage.removeItem('userId');
+                localStorage.removeItem('isAdmin');
+                window.location.href = '/login.html';
+            }
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                checkAdminPassword(); // เรียกให้ป้อนรหัสเมื่อเปิดหน้า
+            });
+        
+            function checkAdminPassword() {
+                const password = prompt('กรุณาใส่รหัสผ่านเพื่อเข้าสู่หน้าจัดการผู้ใช้:');
+                if (password === 'IMI05') {
+                    document.getElementById('userManagementContent').style.display = 'block';
+                    fetchUsers(); // โหลดข้อมูลผู้ใช้
+                } else {
+                    alert('รหัสผ่านไม่ถูกต้อง! คุณจะถูกนำกลับไปหน้าหลัก');
+                    window.location.href = "/index.html"; // พากลับไปหน้าแรก
+                }
+            }
+        </script>
+        
+<footer>
+    <p>&copy; 2025 Fit and Healthy. สงวนสิทธิ์ทั้งหมด</p>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    </body>
+    </html>
+    

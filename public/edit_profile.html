@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Edit Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/pp.css">
+    
+    <style>
+
+        /* Profile Section Styles */
+        .profile-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        /* Form Styles */
+        #editProfileForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #editProfileForm label {
+            text-align: left;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        #editProfileForm input,
+        #editProfileForm select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #editProfileForm button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #editProfileForm button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Button Group Styles */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .button-group button {
+            margin: 0 5px;
+        }
+
+    </style>
+    <body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-light">
+        <a class="navbar-brand" href="#">
+            <img src="css/images/logologo.png" alt="Logo" class="logo-circle">
+            Fit Buddy
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="/bmi.html">BMI Calculator</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/disease.html">Disease</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="user_management.html">User Management</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html">Logout</a></li>
+                </ul>
+        </div>
+    </nav>
+</header>
+
+    <div class="container">
+        <form id="editProfileForm">
+        <h1>Edit Profile</h1>
+       
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" class="form-control" required>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" class="form-control" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" class="form-control" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" id="cancelButton" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('userId');
+            window.location.href = '/login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userId = localStorage.getItem('userId');
+
+            if (!userId) {
+                window.location.href = '/login.html'; // Redirect if not logged in
+                return;
+            }
+
+            // Fetch user data to pre-fill the form
+            fetch(`/api/profile/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('name').value = data.name || '';
+                    document.getElementById('age').value = data.age || '';
+                    document.getElementById('gender').value = data.gender || 'male';
+                    document.getElementById('phone').value = data.phone || '';
+                    document.getElementById('email').value = data.email || '';
+                })
+                .catch(error => console.error('Error:', error));
+
+            document.getElementById('editProfileForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(this);
+                const updatedData = {
+                    name: formData.get('name'),
+                    age: formData.get('age'),
+                    gender: formData.get('gender'),
+                    phone: formData.get('phone'),
+                    email: formData.get('email')
+                };
+
+                fetch(`/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data); // Show success/error message
+                    window.location.href = '/profile.html'; // Redirect back to profile
+                })
+                .catch(error => console.error('Error:', error));
+            });
+
+            document.getElementById('cancelButton').addEventListener('click', function() {
+                window.location.href = '/profile.html'; // Go back to profile
+            });
+        });
+
+    </script>
+        <footer>
+        <p>© 2025 Personalized Exercise Recommendation System. All Rights Reserved.</p>
+        </footer>
+
+   
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

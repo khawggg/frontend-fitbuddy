@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Register</title>
+    <style>
+        /* Form Section */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f0ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        /* Background Shape Styles */
+        .bg-shape {
+            position: absolute;
+            width: 100%;
+            height: 40%;
+            background-color: #c3e0ff; /* Sky Blue Color */
+            border-bottom-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+            top: 0;
+            left: 0;
+            z-index: -1; /* Behind the content */
+        }
+
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 20px 0;
+            color: #004ce4; /* Dark Blue Color */
+        }
+
+
+        form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            margin: 20px auto;
+            box-sizing: border-box;
+            position: relative; /* To contain the profile image */
+        }
+
+        
+
+        label {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+            /* จัด label ให้อยู่คนละบรรทัดกับ input */
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            box-sizing: border-box;
+            display: block;
+            /* จัด input ให้อยู่คนละบรรทัดกับ label */
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #75b2f4;
+            outline: none;
+        }
+
+        button,
+        #backButton {
+            /* รวม selector เพื่อให้ทั้งสองปุ่มมีสไตล์เดียวกัน */
+            background-color: #75b2f4;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            display: block; /* ทำให้เป็น block element เพื่อให้ width ทำงาน */
+            text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+            text-decoration: none; /* ลบเส้นใต้ลิงค์ */
+            margin-top: 15px; /* เพิ่ม margin ด้านบน */
+            box-sizing: border-box; /* ทำให้ padding และ border รวมอยู่ใน width */
+        }
+
+        button:hover,
+        #backButton:hover {
+            background-color: #f8d568;
+            color: #333;
+        }
+
+
+
+        /* Responsive for 768px and below */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            form {
+                width: 90%;
+                padding: 20px;
+            }
+
+            label {
+                font-size: 0.9rem;
+            }
+
+            input,
+            select {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+
+            button,
+			#backButton {
+                /* รวม selector */
+                font-size: 1rem;
+                padding: 12px; 
+			}
+        }
+
+        /* Responsive for 568px and below */
+        @media (max-width: 568px) {
+			h1 {
+				font-size: 1.8rem; 
+			}
+
+			form { 
+				width :95%; 
+				padding :15px; 
+			}
+
+			label { 
+				font-size :0.8rem; 
+			}
+
+			input, 
+			select { 
+				padding :10px; 
+				font-size :0.8rem; 
+			}
+
+			button, 
+			#backButton { 
+				/* รวม selector */ 
+				font-size :0.9rem; 
+				padding :10px; 
+			} 
+		}
+    </style>
+</head>
+
+
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+    </nav>
+
+    <div class="container">
+        <h1>Register</h1>
+        <form id="registerForm">
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="age">Age:</label><br>
+            <input type="number" id="age" name="age"><br>
+            <label for="gender">Gender:</label><br>
+            <select id="gender" name="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select><br>
+            <label for="phone">Phone:</label><br>
+            <input type="text" id="phone" name="phone"><br>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email"><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password"><br><br>
+    
+			<button type="submit">ลงทะเบียน</button>
+        	<!-- Back Button -->
+        	<a href="index.html" id="backButton">ย้อนกลับ</a>
+    	</form>
+    </div>
+
+
+    <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        // Disable submit button while processing
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = 'กำลังลงทะเบียน...';
+        
+        // Client-side validation
+        const name = document.getElementById('name').value.trim();
+        const age = document.getElementById('age').value;
+        const gender = document.getElementById('gender').value;
+        const phone = document.getElementById('phone').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        
+        // Basic validation
+        if (!name || !age || !gender || !phone || !email || !password) {
+            alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+            submitButton.disabled = false;
+            submitButton.textContent = 'ลงทะเบียน';
+            return;
+        }
+        
+        // Email validation
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert('รูปแบบอีเมลไม่ถูกต้อง');
+            submitButton.disabled = false;
+            submitButton.textContent = 'ลงทะเบียน';
+            return;
+        }
+        
+        // Password validation
+        if (password.length < 6) {
+            alert('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
+            submitButton.disabled = false;
+            submitButton.textContent = 'ลงทะเบียน';
+            return;
+        }
+        
+        try {
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name,
+                    age,
+                    gender,
+                    phone,
+                    email,
+                    password
+                })
+            });
+            
+            const data = await response.text();
+            
+            
+            if (response.ok) {
+                alert('ลงทะเบียนสำเร็จ');
+                window.location.href = 'login.html';
+            } else {
+                alert(data || 'การลงทะเบียนล้มเหลว กรุณาลองใหม่อีกครั้ง');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'ลงทะเบียน';
+        }
+    });
+    </script>
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/login.css">
+
+</head>
+
+<body>
+
+    <div class="bg-shape"></div> <!-- Background Shape -->
+    
+
+    <div class="container">
+        <h1>Login</h1>
+        <form id="loginForm">
+            <!-- Profile Image Placeholder -->
+            <div class="profile-image"></div>
+
+            <label for="name">ชื่อ:</label>
+            <input type="text" id="name" name="name" placeholder="กรุณาใส่ชื่อ" required>
+
+            <label for="password">รหัสผ่าน:</label>
+            <input type="password" id="password" name="password" placeholder="กรุณาใส่รหัสผ่าน" required>
+
+            <!-- Button Container -->
+            <div class="button-container">
+                <a href="index.html" id="backButton">ย้อนกลับ</a>
+                <button type="submit">เข้าสู่ระบบ</button>
+            </div>
+        </form>
+        <div id="loginError" style="display: none;">ชื่อหรือรหัสผ่านไม่ถูกต้อง</div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/login', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.userId) {
+                    localStorage.setItem('userId', data.userId); // Store user ID
+                    window.location.href = 'bmi.html'; // Redirect to BMI page
+                } else {
+                    document.getElementById('loginError').style.display = 'block'; // Show error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('loginError').style.display = 'block'; // Show error message
+            });
+        });
+    </script>
+</body>
+
+</html>

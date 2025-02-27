@@ -168,7 +168,7 @@
     
         <script>
             function fetchUsers() {
-                fetch('/users')
+                fetch('${backendURL}/users')
                     .then(response => response.json())
                     .then(users => {
                         const tableBody = document.querySelector('#userTable tbody');
@@ -203,7 +203,7 @@
                 const email = document.getElementById('newEmail').value;
                 const password = document.getElementById('newPassword').value;
     
-                fetch('/users', {
+                fetch('${backendURL}/users', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -231,7 +231,7 @@
                 const email = prompt('ใส่อีเมลใหม่:');
                 const password = prompt('ใส่รหัสผ่านใหม่:');
     
-                fetch(`/users/${userId}`, {
+                fetch(`${backendURL}/users/${userId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'

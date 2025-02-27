@@ -74,7 +74,7 @@
         const submitDiseaseButton = document.getElementById('submitDisease');
         const userId = localStorage.getItem('userId');
 
-        fetch('/diseases')
+        fetch('${backendURL}/diseases')
             .then(response => response.json())
             .then(diseases => {
                 diseases.forEach(disease => {
@@ -89,7 +89,7 @@
         submitDiseaseButton.addEventListener('click', function() {
             const diseaseId = diseaseSelect.value;
             if (!diseaseId) return;
-            fetch(`/disease/${diseaseId}`)
+            fetch(`${backendURL}/disease/${diseaseId}`)
                 .then(response => response.json())
                 .then(disease => {
                     diseaseInfoDiv.innerHTML = `
@@ -100,7 +100,7 @@
                         ${disease.video_url ? `<p><a href="${disease.video_url}" target="_blank">Watch Video</a></p>` : ''}
                         ${disease.reference_url ? `<p><a href="${disease.reference_url}" target="_blank">Read More</a></p>` : ''}
                     `;
-                    fetch('/user-disease', {
+                    fetch('${backendURL}/user-disease', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ userId, diseaseId })

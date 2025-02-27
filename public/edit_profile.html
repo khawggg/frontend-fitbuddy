@@ -76,7 +76,9 @@
 
     </style>
     <body>
+        
 <header>
+    
     <nav class="navbar navbar-expand-md navbar-light">
         <a class="navbar-brand" href="#">
             <img src="css/images/logologo.png" alt="Logo" class="logo-circle">
@@ -130,6 +132,8 @@
     </div>
 
     <script>
+         const backendURL = 'https://backend3-theta.vercel.app';
+
         function logout() {
             localStorage.removeItem('userId');
             window.location.href = '/login.html';
@@ -144,7 +148,7 @@
             }
 
             // Fetch user data to pre-fill the form
-            fetch(`/api/profile/${userId}`)
+            fetch(`${backendURL}/api/profile/${userId}`) // เพิ่ม backendURL ตรงนี้
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('name').value = data.name || '';
@@ -167,7 +171,7 @@
                     email: formData.get('email')
                 };
 
-                fetch(`/users/${userId}`, {
+                fetch(`${backendURL}/users/${userId}`, { // เพิ่ม backendURL ตรงนี้
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'

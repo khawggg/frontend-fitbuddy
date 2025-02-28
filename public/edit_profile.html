@@ -137,65 +137,69 @@
 
     <script>
 
-        function logout() {
-            localStorage.removeItem('userId');
-            window.location.href = '/login.html';
-        }
+            function logout() {
+                localStorage.removeItem('userId');
+                window.location.href = '/login.html';
+            }
+
             document.addEventListener('DOMContentLoaded', function() {
-        const userId = localStorage.getItem('userId');
-        
-        if (!userId) {
-            window.location.href = '/login.html'; // Redirect if not logged in
-            return;
-        }
+                const userId = localStorage.getItem('userId');
 
+                if (!userId) {
+                    window.location.href = '/login.html'; // Redirect if not logged in
+                    return;
+                }
 
-            // Fetch user data to pre-fill the form
-            fetch(`${backendURL}/api/profile/${userId}`) // เพิ่ม backendURL ตรงนี้
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('name').value = data.name || '';
-                    document.getElementById('age').value = data.age || '';
-                    document.getElementById('gender').value = data.gender || 'male';
-                    document.getElementById('phone').value = data.phone || '';
-                    document.getElementById('email').value = data.email || '';
-                })
-                .catch(error => console.error('Error:', error));
+                // Fetch user data to pre-fill the form
+                fetch(`${backendURL}/api/profile/${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('name').value = data.name || '';
+                        document.getElementById('age').value = data.age || '';
+                        document.getElementById('gender').value = data.gender || 'male';
+                        document.getElementById('phone').value = data.phone || '';
+                        document.getElementById('email').value = data.email || '';
+                    })
+                    .catch(error => console.error('Error fetching profile data:', error));
 
-            document.getElementById('editProfileForm').addEventListener('submit', function(event) {
-                event.preventDefault();
+                document.getElementById('editProfileForm').addEventListener('submit', function(event) {
+                    event.preventDefault();
 
-                const formData = new FormData(this);
-                const updatedData = {
-                    name: formData.get('name'),
-                    age: formData.get('age'),
-                    gender: formData.get('gender'),
-                    phone: formData.get('phone'),
-                    email: formData.get('email')
-                };
+                    const formData = new FormData(this);
+                    const updatedData = {
+                        name: formData.get('name'),
+                        age: formData.get('age'),
+                        gender: formData.get('gender'),
+                        phone: formData.get('phone'),
+                        email: formData.get('email')
+                    };
 
-                fetch(`${backendURL}/users/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(updatedData)
-                })
-                .then(response => response.text())
-                .then(data => {
-                    alert(data); // Show success/error message
-                    window.location.href = '/profile.html'; // Redirect back to profile
-                })
-                .catch(error => console.error('Error:', error));
+                    // Send updated data to server with PUT method
+                    fetch(`${backendURL}/api/profile/${userId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedData) // Send updated data as JSON
+                    })
+                    .then(response => response.json()) // Handle JSON response
+                    .then(data => {
+                        alert('Profile updated successfully!');
+                        window.location.href = '/profile.html'; // Redirect back to profile page
+                    })
+                    .catch(error => {
+                        console.error('Error updating profile:', error);
+                        alert('An error occurred while updating your profile.');
+                    });
+                });
+
+                document.getElementById('cancelButton').addEventListener('click', function() {
+                    window.location.href = '/profile.html'; // Go back to profile
+                });
             });
-
-            document.getElementById('cancelButton').addEventListener('click', function() {
-                window.location.href = '/profile.html'; // Go back to profile
-            });
-        });
 
     
-    </script>
+</script>
         <footer>
         <p>© 2025 Personalized Exercise Recommendation System. All Rights Reserved.</p>
         </footer>

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/pp.css">
   
     <script type="module">
-        import { backendURL } from './config.js';
+        import { backendURL } from 'config.js';
         console.log("Backend URL:", backendURL);
     </script>
     
@@ -81,7 +81,8 @@
         const submitDiseaseButton = document.getElementById('submitDisease');
         const userId = localStorage.getItem('userId');
 
-        fetch('${backendURL}/diseases')
+        fetch(`${backendURL}/diseases`)
+        
             .then(response => response.json())
             .then(diseases => {
                 diseases.forEach(disease => {

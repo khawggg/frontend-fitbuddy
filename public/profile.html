@@ -100,11 +100,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId'); // ดึง userId จาก localStorage
 
     if (!userId) {
-        window.location.href = '/login.html'; // Redirect if not logged in
-        return;
+        console.error('User is not logged in or userId is missing');
+        window.location.href = '/login.html'; // Redirect to login if userId is missing
+        return; // หยุดการทำงานหากไม่มี userId
     }
 
     // ฟังก์ชันดึงข้อมูลโปรไฟล์จาก API
@@ -116,7 +117,6 @@
             return response.json();
         })
         .then(data => {
-            // แสดงข้อมูลจาก API หรือค่าที่กำหนดไว้หากไม่มีข้อมูล
             document.getElementById('name').textContent = data.name || 'N/A';
             document.getElementById('age').textContent = data.age || 'N/A';
             document.getElementById('gender').textContent = data.gender || 'N/A';
@@ -130,15 +130,14 @@
         })
         .catch(error => {
             console.error('Error:', error);
-            // แสดงข้อความเมื่อโหลดข้อมูลล้มเหลว
             document.getElementById('name').textContent = 'Error loading data.';
         });
 
-    // เมื่อคลิกปุ่มแก้ไขโปรไฟล์
     document.getElementById('editProfileButton').addEventListener('click', function() {
-        window.location.href = '/edit_profile.html'; // เปลี่ยนเส้นทางไปยังหน้าแก้ไขโปรไฟล์
+        window.location.href = '/edit_profile.html'; // ไปที่หน้าแก้ไขโปรไฟล์
     });
 });
+
 
     </script>
     

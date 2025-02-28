@@ -38,11 +38,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/bmi.html">BMI Calculator</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/disease.html">Diseases</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="bmi.html">BMI Calculator</a></li>
+                    <li class="nav-item"><a class="nav-link" href="disease.html">Diseases</a></li>
                     <li class="nav-item "><a class="nav-link" href="profile.html">Profile</a></li>
-                    <li class="nav-item active"><a class="nav-link" href="/user_management.html">User Management</a></li>
+                    <li class="nav-item active"><a class="nav-link" href="user_management.html">User Management</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Logout</a></li>
                 </ul>
             </div>
@@ -75,16 +75,14 @@
             localStorage.removeItem('userId');
             window.location.href = '/login.html';
         }
-        
         const diseaseSelect = document.getElementById('diseaseSelect');
         const diseaseInfoDiv = document.getElementById('diseaseInfo');
         const submitDiseaseButton = document.getElementById('submitDisease');
         const userId = localStorage.getItem('userId');
 
         fetch(`${backendURL}/diseases`)
-        
-            .then(response => response.json())
-            .then(diseases => {
+        .then(response => response.json())
+        .then(diseases => {
                 diseases.forEach(disease => {
                     const option = document.createElement('option');
                     option.value = disease.disease_id;
@@ -97,6 +95,7 @@
         submitDiseaseButton.addEventListener('click', function() {
             const diseaseId = diseaseSelect.value;
             if (!diseaseId) return;
+
             fetch(`${backendURL}/disease/${diseaseId}`)
                 .then(response => response.json())
                 .then(disease => {
@@ -108,47 +107,46 @@
                         ${disease.video_url ? `<p><a href="${disease.video_url}" target="_blank">Watch Video</a></p>` : ''}
                         ${disease.reference_url ? `<p><a href="${disease.reference_url}" target="_blank">Read More</a></p>` : ''}
                     `;
-                    fetch(`${backendURL}/api/user-disease`, { 
+
+                    fetch(`${backendURL}/user-disease`, { // ตรงนี้ใช้แบคทิกแทนเครื่องหมาย single quote
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ userId, diseaseId })
                     })
-
                     .then(response => response.text())
                     .then(data => alert(data))
                     .catch(error => console.error('Error:', error));
                 })
                 .catch(error => console.error('Error:', error));
-        });
+             });
 
 
-        const getDiseaseSQL = `SELECT name, description, exercise_type, detailed_guideline 
-                           FROM diseases WHERE disease_id = ?`;
+                const getDiseaseSQL = `SELECT name, description, exercise_type, detailed_guideline FROM diseases WHERE disease_id = ?`;
 
-    db.query(getDiseaseSQL, [diseaseId], (err, diseaseResult) => {
-        if (err) {
-            console.error('Error fetching disease data:', err);
-            return res.status(500).send('Failed to fetch disease data');
-        }
-        
-        if (diseaseResult.length === 0) {
-            return res.status(404).send('Disease not found');
-        }
+            db.query(getDiseaseSQL, [diseaseId], (err, diseaseResult) => {
+                if (err) {
+                    console.error('Error fetching disease data:', err);
+                    return res.status(500).send('Failed to fetch disease data');
+                }
+                
+                if (diseaseResult.length === 0) {
+                    return res.status(404).send('Disease not found');
+                }
 
-        const { name, description, exercise_type, detailed_guideline } = diseaseResult[0];
+                const { name, description, exercise_type, detailed_guideline } = diseaseResult[0];
 
-        // บันทึกข้อมูลโรคลงใน user_diseases
-        const insertSQL = `INSERT INTO user_diseases (user_id, disease_id, name, description, exercise_type, detailed_guideline)
-                           VALUES (?, ?, ?, ?, ?, ?)`;
+                // บันทึกข้อมูลโรคลงใน user_diseases
+                const insertSQL = `INSERT INTO user_diseases (user_id, disease_id, name, description, exercise_type, detailed_guideline)
+                                VALUES (?, ?, ?, ?, ?, ?)`;
 
-        db.query(insertSQL, [userId, diseaseId, name, description, exercise_type, detailed_guideline], (err, result) => {
-            if (err) {
-                console.error('User-disease association error:', err);
-                return res.status(500).send('Failed to associate user with disease');
-            }
-            res.send('User-disease association successful');
-        });
-    });
+                db.query(insertSQL, [userId, diseaseId, name, description, exercise_type, detailed_guideline], (err, result) => {
+                    if (err) {
+                        console.error('User-disease association error:', err);
+                        return res.status(500).send('Failed to associate user with disease');
+                    }
+                    res.send('User-disease association successful');
+                });
+            });
     </script>
 
 <footer>

@@ -7,12 +7,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/pp.css">
 
-
     <script>
         const backendURL = 'https://backend3-theta.vercel.app';
         console.log('Backend URL:', backendURL);
     </script>
-
 
     <style>
        /* Profile Section Styles */
@@ -38,7 +36,6 @@
         .profile-section strong {
             font-weight: bold;
         }
-
     </style>
 </head>
 <body>
@@ -55,18 +52,17 @@
                 <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/bmi.html">BMI Calculator</a></li>
                 <li class="nav-item"><a class="nav-link" href="/disease.html">Diseases</a></li>
-                <li class="nav-item "><a class="nav-link" href="profile.html">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
                 <li class="nav-item active"><a class="nav-link" href="/user_management.html">User Management</a></li>
                 <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Logout</a></li>
             </ul>
         </div>
     </nav>
     
-
     <section class="hero-section">
         <div class="overlay">
             <div class="text-content">
-                <h1><span>Your Profile</span>Personal Information</h1>
+                <h1><span>Your Profile</span> Personal Information</h1>
                 <p>View and manage your profile information.</p>
             </div>
         </div>
@@ -86,7 +82,6 @@
             <p><strong>Exercise Types:</strong> <span id="exercise-types"></span></p>
             <p><strong>Detailed Guidelines:</strong> <span id="detailed-guidelines"></span></p>
             <button id="editProfileButton" class="btn btn-primary" style="text-align: center; display: block; margin: 20px auto;">Edit Profile</button>
-
         </section>
     </main>
 
@@ -101,17 +96,14 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-        const userId = localStorage.getItem('userId');
+            const userId = localStorage.getItem('userId');
 
             if (!userId) {
+                console.error('User ID is missing in localStorage');
                 window.location.href = 'login.html';
                 return;
             }
 
-            // เปลี่ยนจากนี้
-            // fetch(`/api/profile/${userId}`)
-            
-            // เป็นนี้
             fetch(`${backendURL}/api/profile/${userId}`)
                 .then(response => {
                     if (!response.ok) {
@@ -140,7 +132,6 @@
                 window.location.href = 'edit_profile.html'; // แก้ไขเส้นทางโดยไม่มีเครื่องหมาย / นำหน้า
             });
         });
-        
     </script>
     
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

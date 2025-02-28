@@ -11,10 +11,6 @@
         console.log('Backend URL:', backendURL);
     </script>
 
-  
-
-
-
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-light">
@@ -108,6 +104,12 @@
                 if (bmi < 30) return 'Overweight';
                 return 'Obese';
             }
+
+            function logout() {
+            localStorage.removeItem('userId');
+            window.location.href = '/login.html';
+        }
+      
 
             function createBMIChart(userId) {
                 fetch(`${backendURL}/getUserBMI?userId=${userId}`)

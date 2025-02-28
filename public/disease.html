@@ -82,7 +82,7 @@
         const submitDiseaseButton = document.getElementById('submitDisease');
         const userId = localStorage.getItem('userId');
 
-        fetch('/diseases')
+        fetch(`${backendURL}/diseases`)
             .then(response => response.json())
             .then(diseases => {
                 diseases.forEach(disease => {

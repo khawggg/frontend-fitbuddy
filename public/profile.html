@@ -107,13 +107,7 @@
             
             console.log('Current userId from localStorage:', userId); // เพิ่มการบันทึกข้อมูลเพื่อการตรวจสอบ
             
-            // ตรวจสอบว่า userId มีอยู่และถูกต้อง
-            if (!userId || userId === 'undefined' || userId === 'null') {
-                console.error('User is not logged in or userId is invalid:', userId);
-                alert('กรุณาเข้าสู่ระบบเพื่อดูโปรไฟล์ของคุณ'); // ให้ข้อมูลกับผู้ใช้
-                window.location.href = '/login.html'; // เปลี่ยนเส้นทางไปยังหน้าเข้าสู่ระบบ
-                return; // หยุดการทำงาน
-            }
+
             
             // ดำเนินการดึงข้อมูลโปรไฟล์ต่อไป
             console.log('Fetching profile for user ID:', userId);

@@ -83,66 +83,45 @@
         const userId = localStorage.getItem('userId');
         console.log({ userId, diseaseId });
 
-                 fetch(`${backendURL}/diseases`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch diseases');
-                        }
-                        return response.json();
-                    })
-                    .then(diseases => {
-                        diseases.forEach(disease => {
-                            const option = document.createElement('option');
-                            option.value = disease.disease_id;
-                            option.text = disease.name;
-                            diseaseSelect.add(option);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching diseases:', error));
 
-                    submitDiseaseButton.addEventListener('click', async function() {
-                    const diseaseId = diseaseSelect.value;
-                    if (!diseaseId) {
-                        alert('Please select a disease');
-                        return;
-                    }
+            fetch(`${backendURL}/diseases`)
+            .then(response => response.json())
+            .then(diseases => {
+                diseases.forEach(disease => {
+                    const option = document.createElement('option');
+                    option.value = disease.disease_id;
+                    option.text = disease.name;
+                    diseaseSelect.add(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
 
-                    try {
-                        const diseaseResponse = await fetch(`${backendURL}/disease/${diseaseId}`);
-                        if (!diseaseResponse.ok) {
-                            throw new Error('Failed to fetch disease details');
-                        }
-                        const disease = await diseaseResponse.json();
+            submitDiseaseButton.addEventListener('click', function() {
+            const diseaseId = diseaseSelect.value;
+            if (!diseaseId) return;
 
-                        diseaseInfoDiv.innerHTML = `
-                            <h3>${disease.name}</h3>
-                            <p><strong>Description:</strong> ${disease.description}</p>
-                            <p><strong>Exercise Type:</strong> ${disease.exercise_type}</p>
-                            <p><strong>Guideline:</strong> ${disease.detailed_guideline}</p>
-                            ${disease.video_url ? `<p><a href="${disease.video_url}" target="_blank">Watch Video</a></p>` : ''}
-                            ${disease.reference_url ? `<p><a href="${disease.reference_url}" target="_blank">Read More</a></p>` : ''}`;
 
-                        const url = `${backendURL}/user-disease`;
-                        const userDiseaseResponse = await fetch(url, {
+            fetch(`${backendURL}/disease/${diseaseId}`)
+                .then(response => response.json())
+                .then(disease => {
+                    diseaseInfoDiv.innerHTML = `
+                        <h3>${disease.name}</h3>
+                        <p><strong>Description:</strong> ${disease.description}</p>
+                        <p><strong>Exercise Type:</strong> ${disease.exercise_type}</p>
+                        <p><strong>Guideline:</strong> ${disease.detailed_guideline}</p>
+                        ${disease.video_url ? `<p><a href="${disease.video_url}" target="_blank">Watch Video</a></p>` : ''}
+                        ${disease.reference_url ? `<p><a href="${disease.reference_url}" target="_blank">Read More</a></p>` : ''}`;
+                    
+                fetch(`${backendURL}/user-disease`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ userId, diseaseId })
-                        });
-
-                        if (!userDiseaseResponse.ok) {
-                            throw new Error('Failed to associate user with disease');
-                        }
-
-                        const data = await userDiseaseResponse.json();
-                        console.log(data);
-                        alert('User-disease association successful');
-
-                        }  catch (error) {
-                        console.error('There was a problem:', error);
-                        alert(error.message);
-                    }
+                        })
+                        .then(response => response.text())
+                        .then(data => alert(data))
+                        .catch(error => console.error('Error:', error));
+                    })
                 });
-
 
 
                 const getDiseaseSQL = `SELECT name, description, exercise_type, detailed_guideline FROM diseases WHERE disease_id = ?`;

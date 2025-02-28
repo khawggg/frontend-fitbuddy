@@ -100,46 +100,50 @@
             window.location.href = 'login.html'; // แก้ไขเส้นทางโดยไม่มีเครื่องหมาย / นำหน้า
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-    const userId = localStorage.getItem('userId');
+        
+            document.addEventListener('DOMContentLoaded', function() {
+                const userId = localStorage.getItem('userId');  // ดึง userId จาก localStorage
 
-    if (!userId) {
-        window.location.href = 'login.html';
-        return;
-    }
+                if (!userId) {
+                    // หากไม่มี userId ให้พาผู้ใช้ไปยังหน้า login
+                    window.location.href = 'login.html';
+                    return;
+                }
 
-    // เปลี่ยนจากนี้
-    // fetch(`/api/profile/${userId}`)
-    
-    // เป็นนี้
-    fetch(`${backendURL}/api/profile/${userId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById('name').textContent = data.name || 'N/A';
-            document.getElementById('age').textContent = data.age || 'N/A';
-            document.getElementById('gender').textContent = data.gender || 'N/A';
-            document.getElementById('email').textContent = data.email || 'N/A';
-            document.getElementById('weight').textContent = data.weight || 'N/A';
-            document.getElementById('height').textContent = data.height || 'N/A';
-            document.getElementById('bmi').textContent = data.bmi || 'N/A';
-            document.getElementById('diseases').textContent = data.diseases || 'None';
-            document.getElementById('exercise-types').textContent = data.exercise_types || 'None';
-            document.getElementById('detailed-guidelines').textContent = data.detailed_guidelines || 'None';
-        })
-        .catch(error => {
-            console.error('Error fetching user data:', error);
-            document.getElementById('name').textContent = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
-        });
+                // ใช้ userId ที่ได้เพื่อดึงข้อมูลจาก API
+                fetch(`${backendURL}/api/profile/${userId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // หากข้อมูลถูกดึงมาได้ จะนำมาแสดงที่หน้า HTML
+                        document.getElementById('name').textContent = data.name || 'N/A';
+                        document.getElementById('age').textContent = data.age || 'N/A';
+                        document.getElementById('gender').textContent = data.gender || 'N/A';
+                        document.getElementById('email').textContent = data.email || 'N/A';
+                        document.getElementById('weight').textContent = data.weight || 'N/A';
+                        document.getElementById('height').textContent = data.height || 'N/A';
+                        document.getElementById('bmi').textContent = data.bmi || 'N/A';
+                        document.getElementById('diseases').textContent = data.diseases || 'None';
+                        document.getElementById('exercise-types').textContent = data.exercise_types || 'None';
+                        document.getElementById('detailed-guidelines').textContent = data.detailed_guidelines || 'None';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching user data:', error);
+                        document.getElementById('name').textContent = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
+                    });
 
-    document.getElementById('editProfileButton').addEventListener('click', function() {
-        window.location.href = 'edit_profile.html'; // แก้ไขเส้นทางโดยไม่มีเครื่องหมาย / นำหน้า
-    });
-});
+                // ฟังก์ชันการคลิกปุ่ม "Edit Profile"
+                document.getElementById('editProfileButton').addEventListener('click', function() {
+                    window.location.href = 'edit_profile.html'; // นำผู้ใช้ไปที่หน้าการแก้ไขโปรไฟล์
+                });
+            });
+        </script>
+
+        
     </script>
     
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

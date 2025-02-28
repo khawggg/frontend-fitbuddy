@@ -84,7 +84,8 @@
         console.log({ userId, diseaseId });
 
 
-            fetch(`${backendURL}/diseases`)
+        fetch(`${backendURL}/diseases`)
+        
             .then(response => response.json())
             .then(diseases => {
                 diseases.forEach(disease => {
@@ -111,35 +112,35 @@
                         <p><strong>Guideline:</strong> ${disease.detailed_guideline}</p>
                         ${disease.video_url ? `<p><a href="${disease.video_url}" target="_blank">Watch Video</a></p>` : ''}
                         ${disease.reference_url ? `<p><a href="${disease.reference_url}" target="_blank">Read More</a></p>` : ''}`;
-                    
-                fetch(`${backendURL}/user-disease`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ userId, diseaseId })
-                        })
-                        .then(response => response.text())
-                        .then(data => alert(data))
-                        .catch(error => console.error('Error:', error));
+                   
+            fetch(`${backendURL}/user-disease`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId, diseaseId })
                     })
-                });
+                    .then(response => response.text())
+                    .then(data => alert(data))
+                    .catch(error => console.error('Error:', error));
+                })
+            });
 
 
                 const getDiseaseSQL = `SELECT name, description, exercise_type, detailed_guideline FROM diseases WHERE disease_id = ?`;
                 db.query(getDiseaseSQL, [diseaseId], (err, diseaseResult) => {
-                    if (err) {
-                            console.error('Error fetching disease data:', err);
-                            return res.status(500).send('Failed to fetch disease data');
-                        }
-                        
-                        if (diseaseResult.length === 0) {
-                            return res.status(404).send('Disease not found');
-                        }
+                if (err) {
+                        console.error('Error fetching disease data:', err);
+                        return res.status(500).send('Failed to fetch disease data');
+                    }
+                    
+                    if (diseaseResult.length === 0) {
+                        return res.status(404).send('Disease not found');
+                    }
 
-                            const { name, description, exercise_type, detailed_guideline } = diseaseResult[0];
+                        const { name, description, exercise_type, detailed_guideline } = diseaseResult[0];
 
-                            // บันทึกข้อมูลโรคลงใน user_diseases
-                            const insertSQL = `INSERT INTO user_diseases (user_id, disease_id, name, description, exercise_type, detailed_guideline)
-                                            VALUES (?, ?, ?, ?, ?, ?)`;
+                        // บันทึกข้อมูลโรคลงใน user_diseases
+                        const insertSQL = `INSERT INTO user_diseases (user_id, disease_id, name, description, exercise_type, detailed_guideline)
+                                        VALUES (?, ?, ?, ?, ?, ?)`;
 
                     db.query(insertSQL, [userId, diseaseId, name, description, exercise_type, detailed_guideline], (err, result) => {
                         if (err) {

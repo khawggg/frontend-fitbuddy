@@ -100,43 +100,43 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-    const userId = localStorage.getItem('userId'); // ดึง userId จาก localStorage
+        const userId = localStorage.getItem('userId'); // ดึง userId จาก localStorage
 
-    if (!userId) {
-        console.error('User is not logged in or userId is missing');
-        window.location.href = '/login.html'; // Redirect to login if userId is missing
-        return; // หยุดการทำงานหากไม่มี userId
-    }
+        if (!userId) {
+            console.error('User is not logged in or userId is missing');
+            window.location.href = '/login.html'; // Redirect to login if userId is missing
+            return; // หยุดการทำงานหากไม่มี userId
+        }
 
     // ฟังก์ชันดึงข้อมูลโปรไฟล์จาก API
-    fetch(`${backendURL}/api/profile/${userId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById('name').textContent = data.name || 'N/A';
-            document.getElementById('age').textContent = data.age || 'N/A';
-            document.getElementById('gender').textContent = data.gender || 'N/A';
-            document.getElementById('email').textContent = data.email || 'N/A';
-            document.getElementById('weight').textContent = data.weight || 'N/A';
-            document.getElementById('height').textContent = data.height || 'N/A';
-            document.getElementById('bmi').textContent = data.bmi || 'N/A';
-            document.getElementById('diseases').textContent = data.diseases || 'None';
-            document.getElementById('exercise-types').textContent = data.exercise_types || 'None';
-            document.getElementById('detailed-guidelines').textContent = data.detailed_guidelines || 'None';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('name').textContent = 'Error loading data.';
-        });
+        fetch(`${backendURL}/api/profile/${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('name').textContent = data.name || 'N/A';
+                document.getElementById('age').textContent = data.age || 'N/A';
+                document.getElementById('gender').textContent = data.gender || 'N/A';
+                document.getElementById('email').textContent = data.email || 'N/A';
+                document.getElementById('weight').textContent = data.weight || 'N/A';
+                document.getElementById('height').textContent = data.height || 'N/A';
+                document.getElementById('bmi').textContent = data.bmi || 'N/A';
+                document.getElementById('diseases').textContent = data.diseases || 'None';
+                document.getElementById('exercise-types').textContent = data.exercise_types || 'None';
+                document.getElementById('detailed-guidelines').textContent = data.detailed_guidelines || 'None';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('name').textContent = 'Error loading data.';
+            });
 
-    document.getElementById('editProfileButton').addEventListener('click', function() {
-        window.location.href = '/edit_profile.html'; // ไปที่หน้าแก้ไขโปรไฟล์
+        document.getElementById('editProfileButton').addEventListener('click', function() {
+            window.location.href = '/edit_profile.html'; // ไปที่หน้าแก้ไขโปรไฟล์
+        });
     });
-});
 
 
     </script>

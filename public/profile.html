@@ -99,53 +99,46 @@
             window.location.href = '/login.html';
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // กำหนด URL ของ backend จากตัวแปรระดับ global หรือกำหนดที่นี่
-            const backendURL = 'https://backend3-theta.vercel.app'; // ตรวจสอบให้แน่ใจว่ามีการกำหนดค่านี้
-            
-            const userId = localStorage.getItem('userId'); // ดึง userId จาก localStorage
-            
-            console.log('Current userId from localStorage:', userId); // เพิ่มการบันทึกข้อมูลเพื่อการตรวจสอบ
-            
+    document.addEventListener('DOMContentLoaded', function() {
+    const userId = localStorage.getItem('userId');
 
-            
-            // ดำเนินการดึงข้อมูลโปรไฟล์ต่อไป
-            console.log('Fetching profile for user ID:', userId);
-            
-            fetch(`${backendURL}/api/profile/${userId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        if (response.status === 404) {
-                            throw new Error('ไม่พบโปรไฟล์ผู้ใช้ กรุณาตรวจสอบบัญชีของคุณหรือติดต่อฝ่ายสนับสนุน');
-                        }
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // บันทึกข้อมูลที่ได้รับเพื่อการตรวจสอบ
-                    console.log('Profile data received:', data);
-                    
-                    // อัปเดต UI ด้วยข้อมูลโปรไฟล์
-                    document.getElementById('name').textContent = data.name || 'N/A';
-                    document.getElementById('age').textContent = data.age || 'N/A';
-                    document.getElementById('gender').textContent = data.gender || 'N/A';
-                    document.getElementById('email').textContent = data.email || 'N/A';
-                    document.getElementById('weight').textContent = data.weight || 'N/A';
-                    document.getElementById('height').textContent = data.height || 'N/A';
-                    document.getElementById('bmi').textContent = data.bmi || 'N/A';
-                    document.getElementById('diseases').textContent = data.diseases || 'ไม่มี';
-                    document.getElementById('exercise-types').textContent = data.exercise_types || 'ไม่มี';
-                    document.getElementById('detailed-guidelines').textContent = data.detailed_guidelines || 'ไม่มี';
-                })
-                .catch(error => {
-                    console.error('Error fetching profile data:', error);
-                    // แสดงข้อความแจ้งเตือนข้อผิดพลาดให้ผู้ใช้ใน UI
-                    document.getElementById('name').textContent = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
-                    alert('ไม่สามารถโหลดข้อมูลโปรไฟล์ได้: ' + error.message);
-                });
+    if (!userId) {
+        window.location.href = '/login.html'; // Redirect if not logged in
+        return;
+    }
+
+    // ฟังก์ชันดึงข้อมูลโปรไฟล์จาก API
+    fetch(`${backendURL}/api/profile/${userId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // แสดงข้อมูลจาก API หรือค่าที่กำหนดไว้หากไม่มีข้อมูล
+            document.getElementById('name').textContent = data.name || 'N/A';
+            document.getElementById('age').textContent = data.age || 'N/A';
+            document.getElementById('gender').textContent = data.gender || 'N/A';
+            document.getElementById('email').textContent = data.email || 'N/A';
+            document.getElementById('weight').textContent = data.weight || 'N/A';
+            document.getElementById('height').textContent = data.height || 'N/A';
+            document.getElementById('bmi').textContent = data.bmi || 'N/A';
+            document.getElementById('diseases').textContent = data.diseases || 'None';
+            document.getElementById('exercise-types').textContent = data.exercise_types || 'None';
+            document.getElementById('detailed-guidelines').textContent = data.detailed_guidelines || 'None';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // แสดงข้อความเมื่อโหลดข้อมูลล้มเหลว
+            document.getElementById('name').textContent = 'Error loading data.';
         });
 
+    // เมื่อคลิกปุ่มแก้ไขโปรไฟล์
+    document.getElementById('editProfileButton').addEventListener('click', function() {
+        window.location.href = '/edit_profile.html'; // เปลี่ยนเส้นทางไปยังหน้าแก้ไขโปรไฟล์
+    });
+});
 
     </script>
     

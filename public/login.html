@@ -43,24 +43,26 @@
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
-            fetch('${backendURL}/login', {
-                method: 'POST',
-                body: new URLSearchParams(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.userId) {
-                    localStorage.setItem('userId', data.userId); // Store user ID
-                    window.location.href = 'bmi.html'; // Redirect to BMI page
-                } else {
-                    document.getElementById('loginError').style.display = 'block'; // Show error message
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('loginError').style.display = 'block'; // Show error message
-            });
-        });
+            fetch(`${backendURL}/login`, {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                })
+                .then(response => response.text()) // เปลี่ยนเป็น .text() หากไม่ใช่ JSON
+                .then(data => {
+                    console.log(data); // แสดงข้อมูลที่ได้รับจากเซิร์ฟเวอร์
+                    if (data.includes("success")) {  // เช็คว่าในข้อมูลที่ได้รับมีข้อความ success หรือไม่
+                        localStorage.setItem('userId', data.userId);
+                        window.location.href = 'bmi.html';
+                    } else {
+                        document.getElementById('loginError').style.display = 'block'; // แสดงข้อความผิดพลาด
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('loginError').style.display = 'block'; // แสดงข้อความผิดพลาด
+                });
+
+                        });
     </script>
 </body>
 

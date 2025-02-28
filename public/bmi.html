@@ -7,10 +7,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/pp.css">
     
+
     <script>
         const backendURL = 'https://backend3-theta.vercel.app';
         console.log('Backend URL:', backendURL);
     </script>
+
+
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-light">
@@ -62,13 +65,7 @@
         <canvas id="bmiChart"></canvas>
     </div>
     
-    <!-- ลบ script ตรงนี้เพื่อหลีกเลี่ยงการโหลดซ้ำซ้อน -->
-   
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <script>
         document.getElementById('bmiForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -94,23 +91,12 @@
                 },
                 body: JSON.stringify({ userId, weight, height: heightCm, bmi })
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('การบันทึกข้อมูล BMI ล้มเหลว');
-                }
-                return response.text();
-            })
+            .then(response => response.text())
             .then(data => {
                 alert(data);
-                // แก้ไขส่วนนี้เพื่อรีโหลดกราฟแทนที่จะนำทางไปหน้าอื่น
-                createBMIChart(userId);
-                // ถ้ายังต้องการนำทางไปหน้า disease ให้เปิดกลับคอมเมนต์บรรทัดด้านล่าง
-                // window.location.href = '/disease.html';
+                window.location.href = '/disease.html';
             })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('เกิดข้อผิดพลาด: ' + error.message);
-            });
+            .catch(error => console.error('Error:', error));
         });
     
         function getBMICategory(bmi) {
@@ -120,118 +106,80 @@
             return 'Obese';
         }
     
+        // แก้ไข: ลบโค้ดที่อ้างถึงปุ่ม backButton ที่ไม่มีอยู่จริง
+    
+
+    
         function logout() {
             localStorage.removeItem('userId');
             window.location.href = '/login.html';
         }
-        
-        function createBMIChart(userId) {
-            if (!userId) {
-                console.error('ไม่พบรหัสผู้ใช้งาน');
-                return;
-            }
-            
-            console.log('กำลังโหลดข้อมูล BMI สำหรับผู้ใช้:', userId);
-            
-            fetch(`${backendURL}/getUserBMI?userId=${userId}`)
-              .then(response => {
-                  if (!response.ok) {
-                      throw new Error('ไม่สามารถดึงข้อมูล BMI ได้');
-                  }
-                  return response.json();
-              })
-              .then(data => {
-                  console.log('ได้รับข้อมูล BMI:', data);
-                  
-                  if (!Array.isArray(data) || data.length === 0) {
-                      console.log('ไม่มีข้อมูล BMI');
-                      document.getElementById('bmiChart').getContext('2d').clearRect(0, 0, 
-                      document.getElementById('bmiChart').width, 
-                      document.getElementById('bmiChart').height);
-                      return;
-                  }
-                  
-                  const ctx = document.getElementById('bmiChart').getContext('2d');
-                  
-                  // ลบกราฟเดิมถ้ามี
-                  if (window.bmiChartInstance) {
-                      window.bmiChartInstance.destroy();
-                  }
-                  
-                  window.bmiChartInstance = new Chart(ctx, {
-                      type: 'line',
-                      data: {
-                          labels: data.map(item => {
-                              const date = new Date(item.created_at);
-                              return date.toLocaleDateString();
-                          }),
-                          datasets: [{
-                              label: 'BMI Trend',
-                              data: data.map(item => item.bmi),
-                              borderColor: '#007bff',
-                              backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                              borderWidth: 2,
-                              pointRadius: 5,
-                              pointBackgroundColor: '#007bff',
-                              pointBorderColor: '#fff',
-                              fill: true
-                          }]
-                      },
-                      options: {
-                          responsive: true,
-                          maintainAspectRatio: true,
-                          plugins: {
-                              legend: {
-                                  display: true,
-                                  labels: { font: { size: 14 }, color: "#333" }
-                              },
-                              tooltip: { 
-                                  enabled: true, 
-                                  mode: 'index', 
-                                  intersect: false,
-                                  callbacks: {
-                                      label: function(context) {
-                                          return `BMI: ${context.raw.toFixed(2)}`;
-                                      }
-                                  }
-                              }
-                          },
-                          scales: {
-                              x: {
-                                  title: { display: true, text: "Date", font: { size: 14, weight: "bold" }, color: "#555" },
-                                  ticks: { autoSkip: true, maxTicksLimit: 5 }
-                              },
-                              y: {
-                                  title: { display: true, text: "BMI Value", font: { size: 14, weight: "bold" }, color: "#555" },
-                                  beginAtZero: false,
-                                  min: 15,
-                                  max: 40,
-                                  ticks: { stepSize: 2 },
-                                  grid: { color: "rgba(200, 200, 200, 0.2)" }
-                              }
-                          }
-                      }
-                  });
-              })
-              .catch(error => {
-                  console.error('Error fetching BMI data:', error);
-                  alert('ไม่สามารถดึงข้อมูล BMI ได้: ' + error.message);
-              });
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('หน้าเว็บโหลดเสร็จแล้ว');
-            const userId = localStorage.getItem('userId');
-            if (userId) {
-                console.log('พบรหัสผู้ใช้:', userId);
-                createBMIChart(userId);
-            } else {
-                console.error('ไม่พบรหัสผู้ใช้งาน');
-                alert('กรุณาเข้าสู่ระบบก่อนใช้งาน');
-                window.location.href = '/login.html';
-            }
-        });
     </script>
+        
+    <script>
+        function createBMIChart(userId) {
+            fetch(`${backendURL}/getUserBMI?userId=${userId}`)
+              .then(response => response.json())
+              .then(data => {
+                const ctx = document.getElementById('bmiChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                    labels: data.map(item => new Date(item.created_at).toLocaleDateString()),
+                    datasets: [{
+                        label: 'BMI Trend',
+                        data: data.map(item => item.bmi),
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        borderWidth: 2,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#007bff',
+                        pointBorderColor: '#fff',
+                        fill: true
+                        }]
+                    },
+    
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true, // ป้องกันการขยายเกินไป
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    labels: { font: { size: 14 }, color: "#333" }
+                                },
+                                tooltip: { enabled: true, mode: 'index', intersect: false }
+                            },
+                            scales: {
+                                x: {
+                                    title: { display: true, text: "Date", font: { size: 14, weight: "bold" }, color: "#555" },
+                                    ticks: { autoSkip: true, maxTicksLimit: 5 }
+                                },
+                                y: {
+                                    title: { display: true, text: "BMI Value", font: { size: 14, weight: "bold" }, color: "#555" },
+                                    beginAtZero: false,
+                                    min: 15,
+                                    max: 40,
+                                    ticks: { stepSize: 2 },
+                                    grid: { color: "rgba(200, 200, 200, 0.2)" }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching BMI data:', error));
+                }
+                document.addEventListener('DOMContentLoaded', () => {
+                    const userId = localStorage.getItem('userId');
+                    if (userId) {
+                        createBMIChart(userId);
+                    }
+                });
+    </script>
+   
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <footer>
         <p>&copy;2025 Fit and Healthy All rights reserved.</p>

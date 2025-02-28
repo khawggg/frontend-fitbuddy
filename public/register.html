@@ -254,38 +254,38 @@
             return;
         }
         
-        try {
-            const response = await fetch('${backendURL}/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name,
-                    age,
-                    gender,
-                    phone,
-                    email,
-                    password
-                })
-            });
-            
-            const data = await response.text();
-            
-            
-            if (response.ok) {
-                alert('ลงทะเบียนสำเร็จ');
-                window.location.href = 'login.html';
-            } else {
-                alert(data || 'การลงทะเบียนล้มเหลว กรุณาลองใหม่อีกครั้ง');
+                    try {
+                const response = await fetch(`${backendURL}/register`, {  // ใช้ backticks
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name,
+                        age,
+                        gender,
+                        phone,
+                        email,
+                        password
+                    })
+                });
+
+                const data = await response.text();
+
+                if (response.ok) {
+                    alert('ลงทะเบียนสำเร็จ');
+                    window.location.href = 'login.html';
+                } else {
+                    alert(data || 'การลงทะเบียนล้มเหลว กรุณาลองใหม่อีกครั้ง');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'ลงทะเบียน';
             }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
-        } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'ลงทะเบียน';
-        }
+
     });
     </script>
     </script>

@@ -108,11 +108,12 @@
                         ${disease.video_url ? `<p><a href="${disease.video_url}" target="_blank">Watch Video</a></p>` : ''}
                         ${disease.reference_url ? `<p><a href="${disease.reference_url}" target="_blank">Read More</a></p>` : ''}
                     `;
-                    fetch('${backendURL}/user-disease', {
+                    fetch(`${backendURL}/api/user-disease`, { 
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ userId, diseaseId })
                     })
+
                     .then(response => response.text())
                     .then(data => alert(data))
                     .catch(error => console.error('Error:', error));

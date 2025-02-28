@@ -129,8 +129,8 @@
                 document.getElementById('detailed-guidelines').textContent = data.detailed_guidelines || 'None';
             })
             .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('name').textContent = 'Error loading data.';
+            console.error('Error:', error);
+            document.getElementById('name').textContent = 'Error loading data.';
             });
 
         document.getElementById('editProfileButton').addEventListener('click', function() {

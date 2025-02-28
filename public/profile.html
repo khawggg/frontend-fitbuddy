@@ -7,16 +7,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/pp.css">
 
-
     <script>
-        const backendURL = 'https://backend3-theta.vercel.app';
+        const backendURL = 'https://backend3-theta.vercel.app'; // เปลี่ยนเป็น URL ของ API เซิร์ฟเวอร์
         console.log('Backend URL:', backendURL);
     </script>
 
-
     <style>
-       /* Profile Section Styles */
-        .profile-section {
+       .profile-section {
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
@@ -38,7 +35,6 @@
         .profile-section strong {
             font-weight: bold;
         }
-
     </style>
 </head>
 <body>
@@ -61,7 +57,6 @@
             </ul>
         </div>
     </nav>
-    
 
     <section class="hero-section">
         <div class="overlay">
@@ -109,7 +104,7 @@
             }
 
             // ฟังก์ชันดึงข้อมูลโปรไฟล์จาก API
-            fetch(`/api/profile/${userId}`)
+            fetch(`${backendURL}/api/profile/${userId}`)
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('name').textContent = data.name || 'N/A';

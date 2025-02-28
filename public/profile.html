@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/pp.css">
 
+
     <script>
         const backendURL = 'https://backend3-theta.vercel.app';
         console.log('Backend URL:', backendURL);
     </script>
+
 
     <style>
        /* Profile Section Styles */
@@ -36,6 +38,7 @@
         .profile-section strong {
             font-weight: bold;
         }
+
     </style>
 </head>
 <body>
@@ -52,13 +55,14 @@
                 <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/bmi.html">BMI Calculator</a></li>
                 <li class="nav-item"><a class="nav-link" href="/disease.html">Diseases</a></li>
-                <li class="nav-item active"><a class="nav-link" href="profile.html">Profile</a></li>
-                <li class="nav-item"><a class="nav-link" href="/user_management.html">User Management</a></li>
+                <li class="nav-item "><a class="nav-link" href="profile.html">Profile</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/user_management.html">User Management</a></li>
                 <li class="nav-item"><a class="nav-link" href="#" onclick="logout()">Logout</a></li>
             </ul>
         </div>
     </nav>
     
+
     <section class="hero-section">
         <div class="overlay">
             <div class="text-content">
@@ -82,6 +86,7 @@
             <p><strong>Exercise Types:</strong> <span id="exercise-types"></span></p>
             <p><strong>Detailed Guidelines:</strong> <span id="detailed-guidelines"></span></p>
             <button id="editProfileButton" class="btn btn-primary" style="text-align: center; display: block; margin: 20px auto;">Edit Profile</button>
+
         </section>
     </main>
 
@@ -103,65 +108,30 @@
                 return;
             }
 
-            // Use the configured backend URL and correct endpoint
-            fetch(`${backendURL}/users/${userId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch profile');
-                    }
-                    return response.json();
-                })
+            // ฟังก์ชันดึงข้อมูลโปรไฟล์จาก API
+            fetch(`/api/profile/${userId}`)
+                .then(response => response.json())
                 .then(data => {
-                    // Since your endpoint returns an array, we need the first item
-                    const user = Array.isArray(data) ? data[0] : data;
-                    
-                    document.getElementById('name').textContent = user.name || 'N/A';
-                    document.getElementById('age').textContent = user.age || 'N/A';
-                    document.getElementById('gender').textContent = user.gender || 'N/A';
-                    document.getElementById('email').textContent = user.email || 'N/A';
-                    
-                    // If these fields come from another table, you may need to make another API call
-                    // or update your backend to include this data
-                    fetchHealthData(userId);
+                    document.getElementById('name').textContent = data.name || 'N/A';
+                    document.getElementById('age').textContent = data.age || 'N/A';
+                    document.getElementById('gender').textContent = data.gender || 'N/A';
+                    document.getElementById('email').textContent = data.email || 'N/A';
+                    document.getElementById('weight').textContent = data.weight || 'N/A';
+                    document.getElementById('height').textContent = data.height || 'N/A';
+                    document.getElementById('bmi').textContent = data.bmi || 'N/A';
+                    document.getElementById('diseases').textContent = data.diseases || 'None';
+                    document.getElementById('exercise-types').textContent = data.exercise_types || 'None';
+                    document.getElementById('detailed-guidelines').textContent = data.detailed_guidelines || 'None';
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    // Show error message when data loading fails
+                    // แสดงข้อความเมื่อโหลดข้อมูลล้มเหลว
                     document.getElementById('name').textContent = 'Error loading data.';
                 });
-                
-            // Function to fetch health assessment data separately if needed
-            function fetchHealthData(userId) {
-                fetch(`${backendURL}/getUserBMI?userId=${userId}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch health data');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Find the matching health record for this user
-                        const healthData = Array.isArray(data) ? 
-                            data.find(record => record.user_id == userId) : data;
-                            
-                        if (healthData) {
-                            document.getElementById('bmi').textContent = healthData.bmi || 'N/A';
-                            // You'll need additional API endpoints or combined data for these fields
-                            // document.getElementById('weight').textContent = healthData.weight || 'N/A';
-                            // document.getElementById('height').textContent = healthData.height || 'N/A';
-                            // document.getElementById('diseases').textContent = healthData.diseases || 'None';
-                            // document.getElementById('exercise-types').textContent = healthData.exercise_types || 'None';
-                            // document.getElementById('detailed-guidelines').textContent = healthData.detailed_guidelines || 'None';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching health data:', error);
-                    });
-            }
 
-            // Edit profile button handler
+            // เมื่อคลิกปุ่มแก้ไขโปรไฟล์
             document.getElementById('editProfileButton').addEventListener('click', function() {
-                window.location.href = '/edit_profile.html';
+                window.location.href = '/edit_profile.html'; // เปลี่ยนเส้นทางไปยังหน้าแก้ไขโปรไฟล์
             });
         });
     </script>

@@ -6,14 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/pp.css">
+
+
+    
     <script>
         const backendURL = 'https://bn-fitbuddy2-2vso.vercel.app/';
         console.log('Backend URL:', backendURL);
     </script>
-      
+
     
-
-
     <style>
         .form-container {
             background-color: #fff;
@@ -27,6 +28,7 @@
     </style>
 </head>
 <body>
+    <body>
         <nav class="navbar navbar-expand-md navbar-light">
             <a class="navbar-brand" href="#">
                 <img src="css/images/logologo.png" alt="Logo" class="logo-circle">
@@ -50,18 +52,18 @@
     <section class="hero-section">
         <div class="overlay">
             <div class="text-content">
-                <h1><span>Disease Information</span>เรียนรู้เกี่ยวกับโรคของคุณ</h1>
-                <p>เลือกโรคเพื่อดูรายละเอียดและคำแนะนำ.</p>
+                <h1><span>Disease Information</span>Learn About Your Condition</h1>
+                <p>Select a disease to see details and recommendations.</p>
             </div>
         </div>
     </section>
     
     <section class="form-container">
-        <h2>เลือกโรคของคุณ</h2>
+        <h2>Select Your Disease</h2>
         <select id="diseaseSelect" class="form-control mb-3">
-            <option value="">เลือกโรค</option>
+            <option value="">Select a disease</option>
         </select>
-        <button id="submitDisease" class="btn btn-primary" style="display: block; margin: 0 auto; width: fit-content;">ส่ง</button>
+        <button id="submitDisease" class="btn btn-primary" style="display: block; margin: 0 auto; width: fit-content;">Submit</button>
 
         <div id="diseaseInfo" class="mt-3"></div>
         
@@ -80,8 +82,7 @@
         const submitDiseaseButton = document.getElementById('submitDisease');
         const userId = localStorage.getItem('userId');
 
-        fetch(`${backendURL}/diseases`)
-        
+        fetch('/diseases')
             .then(response => response.json())
             .then(diseases => {
                 diseases.forEach(disease => {
@@ -101,23 +102,52 @@
                 .then(disease => {
                     diseaseInfoDiv.innerHTML = `
                         <h3>${disease.name}</h3>
-                        <p><strong>คำอธิบาย:</strong> ${disease.description}</p>
-                        <p><strong>ประเภทการออกกำลังกาย:</strong> ${disease.exercise_type}</p>
-                        <p><strong>คำแนะนำ:</strong> ${disease.detailed_guideline}</p>
-                        ${disease.video_url ? `<p><a href="${disease.video_url}" target="_blank">ดูวิดีโอ</a></p>` : ''}
-                        ${disease.reference_url ? `<p><a href="${disease.reference_url}" target="_blank">อ่านเพิ่มเติม</a></p>` : ''}
+                        <p><strong>Description:</strong> ${disease.description}</p>
+                        <p><strong>Exercise Type:</strong> ${disease.exercise_type}</p>
+                        <p><strong>Guideline:</strong> ${disease.detailed_guideline}</p>
+                        ${disease.video_url ? `<p><a href="${disease.video_url}" target="_blank">Watch Video</a></p>` : ''}
+                        ${disease.reference_url ? `<p><a href="${disease.reference_url}" target="_blank">Read More</a></p>` : ''}
                     `;
-                    fetch(`${backendURL}/api/user-disease`, {  // แก้ไข URL
+                    fetch(`${backendURL}/user-disease`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ userId, diseaseId })
                     })
-                    .then(response => response.text()) // สมมติว่า backend ส่งกลับข้อความธรรมดา
+                    .then(response => response.text())
                     .then(data => alert(data))
                     .catch(error => console.error('Error:', error));
                 })
                 .catch(error => console.error('Error:', error));
         });
+
+
+        const getDiseaseSQL = `SELECT name, description, exercise_type, detailed_guideline 
+                           FROM diseases WHERE disease_id = ?`;
+
+    db.query(getDiseaseSQL, [diseaseId], (err, diseaseResult) => {
+        if (err) {
+            console.error('Error fetching disease data:', err);
+            return res.status(500).send('Failed to fetch disease data');
+        }
+        
+        if (diseaseResult.length === 0) {
+            return res.status(404).send('Disease not found');
+        }
+
+        const { name, description, exercise_type, detailed_guideline } = diseaseResult[0];
+
+        // บันทึกข้อมูลโรคลงใน user_diseases
+        const insertSQL = `INSERT INTO user_diseases (user_id, disease_id, name, description, exercise_type, detailed_guideline)
+                           VALUES (?, ?, ?, ?, ?, ?)`;
+
+        db.query(insertSQL, [userId, diseaseId, name, description, exercise_type, detailed_guideline], (err, result) => {
+            if (err) {
+                console.error('User-disease association error:', err);
+                return res.status(500).send('Failed to associate user with disease');
+            }
+            res.send('User-disease association successful');
+        });
+    });
     </script>
 
 <footer>
